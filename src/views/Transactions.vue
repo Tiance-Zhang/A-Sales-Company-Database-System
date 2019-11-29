@@ -36,70 +36,72 @@
 </template>
 
 <script>
-import Transaction from "@/components/Transaction";
-import { mapGetters } from "vuex";
+  import Transaction from "@/components/Transaction";
+  import {mapGetters} from "vuex";
 
-var data3 = [
-  {
-    orderNumber: 1,
-    date: "11-25-2019",
-    salespersonName: "Jack",
-    productName:
-      "2 of Move Free Joint Health Supplement Tablets, (120 count in a bottle), Supports Mobility, Flexibility, Strength, Lubrication and Comfort",
-    price: 50000,
-    quantity: 1
-  },
-  {
-    orderNumber: 2,
-    date: "11-23-2019",
-    salespersonName: "Ben",
-    productName: "Benz",
-    price: 100000,
-    quantity: 2
-  }
-];
-export default {
-  name: "Transactions",
-  components: { Transaction },
-  data() {
-    return {
-      transactions: data3,
-      dialogFormVisible: false,
-      form: {
-        customerId: "",
-        date: "",
-        productName: "",
-        price: "",
-        quantity: "",
-        userId: this.getUserId()
-      },
-      formLabelWidth: "120px"
-    };
-  },
-  mounted() {
-    this.$store.dispatch("updateCurrentTabIndex", "3");
-  },
-  computed: {
-    ...mapGetters(["getUserType", "getUserId"])
-  },
-  methods: {
-    submitTransaction() {
-      console.log(this.form);
-      this.dialogFormVisible = false;
+  var data3 = [
+    {
+      orderNumber: 1,
+      date: "11-25-2019",
+      salespersonName: "Jack",
+      productName:
+        "2 of Move Free Joint Health Supplement Tablets, (120 count in a bottle), Supports Mobility, Flexibility, Strength, Lubrication and Comfort",
+      price: 50000,
+      quantity: 1
+    },
+    {
+      orderNumber: 2,
+      date: "11-23-2019",
+      salespersonName: "Ben",
+      productName: "Benz",
+      price: 100000,
+      quantity: 2
     }
-  }
-};
+  ];
+  export default {
+    name: "Transactions",
+    components: {Transaction},
+    data() {
+      return {
+        transactions: data3,
+        dialogFormVisible: false,
+        form: {
+          customerId: "",
+          date: "",
+          productName: "",
+          price: "",
+          quantity: "",
+          userId: ""
+        },
+        formLabelWidth: "120px"
+      };
+    },
+    mounted() {
+      console.log("mounted");
+      this.$store.dispatch("updateCurrentTabIndex", "3");
+      this.form.userId = this.getUserId
+    },
+    computed: {
+      ...mapGetters(["getUserType", "getUserId"])
+    },
+    methods: {
+      submitTransaction() {
+        console.log(this.form);
+        this.dialogFormVisible = false;
+      }
+    }
+  };
 </script>
 
 <style scoped>
-.transactionContainer {
-  display: flex;
-  flex-direction: column;
-}
+  .transactionContainer {
+    display: flex;
+    flex-direction: column;
+  }
 
-.transactionItemContainer {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 30px 30px 30px 50px;
-}
+  .transactionItemContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 30px 30px 30px 50px;
+  }
 </style>
