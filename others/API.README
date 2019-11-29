@@ -1,0 +1,44 @@
+businessCustomer {
+    customerID: int,
+    name: string,
+    street: string,
+    city: string,
+    state: string,
+    zip code: string,
+    kind: int,
+    category: string,
+    gross: int
+}
+
+homeCustomer {
+    customerID: int,
+    name: string,
+    street: string,
+    city: string,
+    state: string,
+    zip code: string,
+    kind: int,
+    marriage: int,
+    gender: int,
+    age: int,
+    income: int
+}
+
+product {
+    productID: int,
+    name: string,
+    inventory: int,
+    price: int,
+    type: string
+}
+
+transaction [
+    {
+        orderNumber: int,
+        date: string,
+        salespersonName: string,
+        productName: string,
+        price: int,
+        quantity: int
+    }
+]
