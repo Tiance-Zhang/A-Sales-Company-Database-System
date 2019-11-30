@@ -1,13 +1,7 @@
 <template>
   <div>
-    <div v-if="transactions.length > 0" class="transactionContainer">
-      <div v-for="t in transactions" v-bind:key="t.orderNumber">
-        <Transaction :t="t"></Transaction>
-      </div>
-    </div>
-    <div v-if="getUserType === '1'">
+    <div class="newTransaction">
       <el-button type="text" @click="dialogFormVisible = true">Create a new transaction</el-button>
-
       <el-dialog title="New transaction" :visible.sync="dialogFormVisible">
         <el-form :model="form">
           <el-form-item label="Customer Id" :label-width="formLabelWidth">
@@ -32,76 +26,68 @@
         </span>
       </el-dialog>
     </div>
+    <div v-for="t in transactions" v-bind:key="t.orderNumber">
+      <Transaction :t="t"></Transaction>
+    </div>
   </div>
 </template>
 
 <script>
-  import Transaction from "@/components/Transaction";
-  import {mapGetters} from "vuex";
+import Transaction from "@/components/Transaction";
 
-  var data3 = [
-    {
-      orderNumber: 1,
-      date: "11-25-2019",
-      salespersonName: "Jack",
-      productName:
-        "2 of Move Free Joint Health Supplement Tablets, (120 count in a bottle), Supports Mobility, Flexibility, Strength, Lubrication and Comfort",
-      price: 50000,
-      quantity: 1
-    },
-    {
-      orderNumber: 2,
-      date: "11-23-2019",
-      salespersonName: "Ben",
-      productName: "Benz",
-      price: 100000,
-      quantity: 2
+var data = [
+  {
+    orderNumber: 1,
+    date: "11-25-2019",
+    salespersonName: "Jack",
+    productName:
+      "2 of Move Free Joint Health Supplement Tablets, (120 count in a bottle), Supports Mobility, Flexibility, Strength, Lubrication and Comfort",
+    price: 50000,
+    quantity: 1
+  },
+  {
+    orderNumber: 2,
+    date: "11-23-2019",
+    salespersonName: "Ben",
+    productName: "Benz",
+    price: 100000,
+    quantity: 2
+  }
+];
+
+export default {
+  name: "Transactions",
+  components: { Transaction },
+  data() {
+    return {
+      transactions: data,
+      dialogFormVisible: false,
+      form: {
+        customerId: "",
+        date: "",
+        productName: "",
+        price: "",
+        quantity: ""
+      },
+      formLabelWidth: "120px"
+    };
+  },
+  mounted() {
+    console.log("mounted");
+    this.$store.dispatch("updateCurrentTabIndex", "3");
+  },
+  methods: {
+    submitTransaction() {
+      console.log(this.form);
+      this.dialogFormVisible = false;
     }
-  ];
-  export default {
-    name: "Transactions",
-    components: {Transaction},
-    data() {
-      return {
-        transactions: data3,
-        dialogFormVisible: false,
-        form: {
-          customerId: "",
-          date: "",
-          productName: "",
-          price: "",
-          quantity: "",
-          userId: ""
-        },
-        formLabelWidth: "120px"
-      };
-    },
-    mounted() {
-      console.log("mounted");
-      this.$store.dispatch("updateCurrentTabIndex", "3");
-      this.form.userId = this.getUserId
-    },
-    computed: {
-      ...mapGetters(["getUserType", "getUserId"])
-    },
-    methods: {
-      submitTransaction() {
-        console.log(this.form);
-        this.dialogFormVisible = false;
-      }
-    }
-  };
+  }
+};
 </script>
 
 <style scoped>
-  .transactionContainer {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .transactionItemContainer {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 30px 30px 30px 50px;
-  }
+.newTransaction {
+  text-align: center;
+  margin-top: 20px;
+}
 </style>

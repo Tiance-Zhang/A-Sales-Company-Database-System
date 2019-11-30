@@ -12,13 +12,7 @@
         <router-link to="transactions" class="nav-link">Transactions</router-link>
       </el-menu-item>
       <el-menu-item index="4">
-        <router-link to="account" class="nav-link">Account</router-link>
-      </el-menu-item>
-      <el-menu-item index="5">
-        <router-link to="signup" class="nav-link">Sign Up</router-link>
-      </el-menu-item>
-      <el-menu-item index="6">
-        <router-link to="login" class="nav-link">Login</router-link>
+        <router-link to="customers" class="nav-link">Customers</router-link>
       </el-menu-item>
     </el-menu>
   </div>

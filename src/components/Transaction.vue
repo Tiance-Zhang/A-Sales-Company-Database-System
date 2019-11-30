@@ -1,7 +1,7 @@
 <template>
   <el-card class="trans-card">
     <div class="first_line">
-      <div>Date {{t.date}}</div>
+      <div>{{t.date}}</div>
       <div>Order #{{t.orderNumber}}</div>
     </div>
     <div class="second-line">
