@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="newTransaction">
+    <div v-if="getCurUser.typeype === 0 || getCurUser.typeype === 1" class="newTransaction">
       <el-button type="text" @click="dialogFormVisible = true">Create a new transaction</el-button>
       <el-dialog title="New transaction" :visible.sync="dialogFormVisible">
         <el-form :model="form">
@@ -34,6 +34,7 @@
 
 <script>
 import Transaction from "@/components/Transaction";
+import { mapGetters } from "vuex";
 
 var data = [
   {
@@ -81,7 +82,10 @@ export default {
       console.log(this.form);
       this.dialogFormVisible = false;
     }
-  }
+  },
+  computed: {
+    ...mapGetters(["getCurUser"])
+  },
 };
 </script>
 

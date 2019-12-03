@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="newStore">
+    <div v-if="getCurUser.type === 0" class="newStore">
       <el-button type="text" @click="dialogFormVisible = true">Create a new store</el-button>
       <el-dialog title="New Store" :visible.sync="dialogFormVisible">
         <el-form :model="form">
@@ -14,7 +14,7 @@
             <el-input v-model="form.state"></el-input>
           </el-form-item>
           <el-form-item label="Zip" :label-width="formLabelWidth" prop="zipcode">
-            <el-input v-model="form.zipcode"></el-input>
+            <el-input v-model="form.zip"></el-input>
           </el-form-item>
           <el-form-item label="Manager" :label-width="formLabelWidth" prop="manager">
             <el-input v-model="form.manager"></el-input>
@@ -71,7 +71,7 @@ export default {
         region: ""
       },
       formLabelWidth: "120px"
-    }
+    };
   },
   mounted() {
     this.$store.dispatch("updateCurrentTabIndex", "2");
@@ -81,6 +81,9 @@ export default {
       console.log(this.form);
       this.dialogFormVisible = false;
     }
+  },
+  computed: {
+    ...mapGetters(["getCurUser"])
   }
 };
 </script>

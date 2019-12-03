@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="newProduct">
+    <div v-if="etCurUser.type === 0" class="newProduct">
       <el-button type="text" @click="dialogFormVisible = true">Create a new Product</el-button>
       <el-dialog title="New Product" :visible.sync="dialogFormVisible">
         <el-form :model="form">
@@ -33,48 +33,37 @@
 import Product from "@/components/Product";
 import { mapGetters } from "vuex";
 
-
-var data = [
-  {
-    productId: "1234",
-    productName: "Dog",
-    inventoryAmount: "1",
-    price: "500",
-    type: "Animal"
+export default {
+  name: "Products",
+  components: { Product },
+  data() {
+    return {
+      products: "",
+      dialogFormVisible: false,
+      form: {
+        productId: "",
+        productName: "",
+        inventoryAmount: "",
+        price: "",
+        type: ""
+      },
+      formLabelWidth: "120px"
+    };
   },
-  {
-    productId: "12",
-    productName: "Cat",
-    inventoryAmount: "100",
-    price: "200",
-    type: "SSS"
-  }
-]
-
-  export default {
-    name: "Products",
-    components: {Product},
-    data() {
-      return {
-        products: data,
-        dialogFormVisible: false,
-        form: {
-          productId: "",
-          productName: "",
-          inventoryAmount: "",
-          price: "",
-          type: ""
-        },
-        formLabelWidth: "120px"
-      };
-    },
-    methods: {
-      submitProduct() {
-        console.log(this.form);
-        this.dialogFormVisible = false;
-      }
+  async mounted() {
+    const r = await this.$api.get('/api/products')
+    this.products = r.data
+  },
+  methods: {
+    submitProduct() {
+      console.log(this.form);
+      this.dialogFormVisible = false;
     }
-  }
+  },
+  computed: {
+    ...mapGetters(["getCurUser"])
+  },
+};
 </script>
 
 <style scoped>

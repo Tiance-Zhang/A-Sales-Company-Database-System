@@ -3,7 +3,9 @@ import VueRouter from 'vue-router'
 import Products from "@/views/Products";
 import Stores from "@/views/Stores";
 import Transactions from "@/views/Transactions";
-import Customers from "@/views/Customers";
+import Users from "@/views/Users";
+import Statistics from "@/views/Statistics";
+import Login from "@/views/Login"
 
 Vue.use(VueRouter);
 
@@ -21,9 +23,17 @@ const routes = [
     name: 'Transactions',
     component: Transactions
   }, {
-    path: '/customers',
-    name: 'Customers',
-    component: Customers
+    path: '/users',
+    name: 'Users',
+    component: Users
+  }, {
+    path: '/statistics',
+    name: 'Statistics',
+    component: Statistics
+  }, {
+    path: '/login',
+    name: 'Login',
+    component: Login
   }
 ];
 

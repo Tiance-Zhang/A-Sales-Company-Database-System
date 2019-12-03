@@ -2,6 +2,10 @@
   <el-card class="store-card">
     <div class="first_line">
       <div>No. {{s.storeId}}</div>
+      <div v-if="getCurUser.type === 0 || getCurUser.type === 1">
+        <el-button @click="updateS">Update</el-button>
+        <el-button @click="deleteS">Delete</el-button>
+      </div>
     </div>
     <div class="second-line">
       <div>Region: {{ s.region }}</div>
@@ -13,8 +17,13 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   name: "Store",
+  computed: {
+    ...mapGetters(["getCurUser"])
+  },
   props: {
     s: {
       storeId: "",
@@ -22,6 +31,14 @@ export default {
       manager: "",
       numOfSalesperson: "",
       region: ""
+    }
+  },
+  methods: {
+    updateS() {
+
+    },
+    deleteS() {
+      console.log(this.t);
     }
   }
 };
@@ -33,6 +50,7 @@ export default {
 .first_line {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   background: #f6f6f6;
   padding: 14px 18px;
 }
