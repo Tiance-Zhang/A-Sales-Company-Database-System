@@ -19,6 +19,7 @@ user_parser.add_argument('gross', type=int)
 
 user_parser.add_argument('gender', type=int)
 user_parser.add_argument('marriage', type=str)
+user_parser.add_argument('age', type=int)
 user_parser.add_argument('income', type=int)
 
 user_parser.add_argument('email', type=str)
@@ -60,17 +61,17 @@ class User(Resource):
             'SELECT * FROM user WHERE id={id}'.format(id=args['id']))
         data = cursor.fetchone()
         if data is not None:
-            cursor.execute("UPDATE user SET name='{name}', type='{type}', address='{address}', zip='{zip}' WHERE id={id};".format(
+            cursor.execute("UPDATE user SET name='{name}', type={type}, address='{address}', zip='{zip}' WHERE id={id};".format(
                 id=args['id'], name=args['name'], type=args['type'], address=args['address'], zip=args['zip']))
             if args['type'] == 1:
-                cursor.execute("UPDATE salesperson SET email='{email}', jobTitle='{jobTitle}', storeId='{storeId}', salary='{salary}' WHERE id={id};".format(
+                cursor.execute("UPDATE salesperson SET email='{email}', jobTitle='{jobTitle}', storeId={storeId}, salary={salary} WHERE id={id};".format(
                     id=args['id'], email=args['email'], jobTitle=args['jobTitle'], storeId=args['storeId'], salary=args['salary']))
             elif args['type'] == 2:
-                cursor.execute("UPDATE businessCustomer SET category='{category}', gross='{gross}' WHERE id={id};".format(
+                cursor.execute("UPDATE businessCustomer SET category='{category}', gross={gross} WHERE id={id};".format(
                     id=args['id'], category=args['category'], gross=args['gross']))
             elif args['type'] == 3:
-                cursor.execute("UPDATE homeCustomer SET gender='{gender}', marriage='{marriage}', income='{income}' WHERE id={id};".format(
-                    id=args['id'], gender=args['gender'], marriage=args['marriage'], income=args['income']))
+                cursor.execute("UPDATE homeCustomer SET gender={gender}, marriage='{marriage}', age={age}, income={income} WHERE id={id};".format(
+                    id=args['id'], gender=args['gender'], marriage=args['marriage'], age=args['age'], income=args['income']))
             return {'status': True}
         else:
             return {'status': False}
@@ -80,19 +81,18 @@ class User(Resource):
         cursor.execute(
             'SELECT * FROM user WHERE id={id}'.format(id=args['id']))
         data = cursor.fetchone()
-        print(data)
         if data is None:
             cursor.execute("INSERT INTO user (id, name, type, address, zip) VALUES ({id}, '{name}', '{type}', '{address}', '{zip}');".format(
                 id=args['id'], name=args['name'], type=args['type'], address=args['address'], zip=args['zip']))
             if args['type'] == 1:
-                cursor.execute("INSERT INTO salesperson (id, email, jobTitle, storeId, salary) VALUES ({id}, '{email}', '{jobTitle}', '{storeId}', '{salary}');".format(
+                cursor.execute("INSERT INTO salesperson (id, email, jobTitle, storeId, salary) VALUES ({id}, '{email}', '{jobTitle}', {storeId}, {salary});".format(
                     id=args['id'], email=args['email'], jobTitle=args['jobTitle'], storeId=args['storeId'], salary=args['salary']))
             elif args['type'] == 2:
                 cursor.execute("INSERT INTO businessCustomer (id, category, gross) VALUES ({id}, '{category}', '{gross}');".format(
                     id=args['id'], category=args['category'], gross=args['gross']))
             elif args['type'] == 3:
-                cursor.execute("INSERT INTO homeCustomer (id, gender, marriage, income) VALUES ({id}, '{gender}', '{marriage}', '{income}');".format(
-                    id=args['id'], gender=args['gender'], marriage=args['marriage'], income=args['income']))
+                cursor.execute("INSERT INTO homeCustomer (id, gender, marriage, age, income) VALUES ({id}, '{gender}', '{marriage}', '{age}', '{income}');".format(
+                    id=args['id'], gender=args['gender'], marriage=args['marriage'], age=args['age'], income=args['income']))
             return {'status': True}
         else:
             return {'status': False}
@@ -366,8 +366,10 @@ class Transaction(Resource):
         args = transaction_parser.parse_args()['data']
         cursor.execute(
             'SELECT * FROM transaction WHERE id = {id}'.format(id=args['id']))
-        data = cursor.fetchone()
-        if data is None:
+        data1 = cursor.fetchone()
+        cursor.execute("SELECT inventory FROM product WHERE productName='{productName}'".format(productName=args['productName']))
+        data2 = cursor.fetchone()
+        if data1 is None and data2 is not None and data2['inventory'] > int(args['quantity']):
             cursor.execute("INSERT INTO transaction (id, date, customerId, salespersonId, storeId, productName, price, quantity) VALUES ({id}, '{date}', {customerId}, {salespersonId}, {storeId}, '{productName}', {price}, {quantity});".format(
                 id=args['id'], date=datetime.strptime(args['date'],'%Y-%m-%d %H:%M:%S'), customerId=args['customerId'], salespersonId=args['salespersonId'], storeId=args['storeId'], productName=args['productName'], price=args['price'], quantity=args['quantity']))
             return {'status': True}
@@ -401,6 +403,27 @@ class Transaction(Resource):
             return {'status': False}
 
 
+class Statistics(Resource):
+    def get(self):
+        data = {}
+        cursor.execute('SELECT SUM(price * quantity) AS s FROM transaction;')
+        data['totalSales'] = int(cursor.fetchone()['s'])
+        cursor.execute('SELECT name, s FROM user, (SELECT customerId, SUM(price * quantity) AS s FROM transaction GROUP BY customerId ORDER BY s DESC LIMIT 1) AS tmp WHERE id = tmp.customerId;')
+        res = cursor.fetchone()
+        data['mostBuyer'] = res['name']
+        data['mostBuyerSpent'] = int(res['s'])
+        cursor.execute('SELECT productName, SUM(price * quantity) AS s FROM transaction GROUP BY productName ORDER BY s DESC LIMIT 1;')
+        res = cursor.fetchone()
+        data['mostPopularProduct'] = res['productName']
+        data['mostPopularProductSales'] = int(res['s'])
+        cursor.execute('SELECT storeId, COUNT(*) AS c FROM transaction GROUP BY storeId ORDER BY c DESC LIMIT 1;')
+        res = cursor.fetchone()
+        data['mostPopularStore'] = res['storeId']
+        data['mostPopularStoreCount'] = int(res['c'])
+
+        return data
+
+
 automobile_api.add_resource(User, '/user')
 automobile_api.add_resource(Product, '/product')
 automobile_api.add_resource(Products, '/products')
@@ -409,3 +432,5 @@ automobile_api.add_resource(Stores, '/stores')
 automobile_api.add_resource(Transaction, '/transaction')
 automobile_api.add_resource(TransactionsSalesperson, '/transactionsSalesperson')
 automobile_api.add_resource(TransactionsCustomer, '/transactionsCustomer')
+automobile_api.add_resource(Statistics, '/statistics')
+

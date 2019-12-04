@@ -2,51 +2,49 @@
 <div class="container">
     <el-card>
         <div class="infoBody">
+            <div>Total Sales</div>
+            <div>${{data.totalSales}}</div>
+        </div>
+        <div class="infoBody">
+            <div>Customer Buys Most</div>
+            <div>{{data.mostBuyer}}</div>
+        </div>
+        <div class="infoBody">
+            <div>{{data.mostBuyer}} spent</div>
+            <div>${{data.mostBuyerSpent}}</div>
+        </div>
+        <div class="infoBody">
             <div>Most Popular Product</div>
             <div>{{data.mostPopularProduct}}</div>
         </div>
         <div class="infoBody">
-            <div>Business Customer Buys Most</div>
-            <div>Mia</div>
+            <div>{{data.mostPopularProduct}} sold</div>
+            <div>${{data.mostPopularProductSales}}</div>
         </div>
         <div class="infoBody">
-            <div>Home Customer Buys Most</div>
-            <div>Ivan</div>
+            <div>Most Popular Store</div>
+            <div>Store {{data.mostPopularStore}}</div>
         </div>
         <div class="infoBody">
-            <div>Total Sales</div>
-            <div>33,331</div>
-        </div>
-        <div v-for="(value, key) in data.regions" v-bind:key="key">
-            <div class="infoBody">
-                <div>Store {{key}}</div>
-                <div>{{value}}</div>
-            </div>
+            <div>Store {{data.mostPopularStore}} transaction</div>
+            <div>{{data.mostPopularStoreCount}}</div>
         </div>
     </el-card>
 </div>
 </template>
 
 <script>
-var data = {
-    mostPopularProduct: "458 spider",
-    mostBuyer: "KFC",
-    regions: {
-        "1": 1,
-        "2": 3
-    }
-}
-
-
 export default {
   name: "Statistics",
   data() {
       return {
-          data: data
+          data: {}
       }
   },
-  mounted() {
+  async mounted() {
     this.$store.dispatch("updateCurrentTabIndex", "5");
+    const r = await this.$api.get("/api/statistics")
+    this.data = r.data
   }
 };
 </script>

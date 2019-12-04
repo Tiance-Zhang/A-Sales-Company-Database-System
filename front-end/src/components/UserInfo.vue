@@ -131,10 +131,10 @@ export default {
       if (r.data.status == true) {
         alert("Operation succeed!");
         this.info = {};
-        console.log(this.info.userId)
       } else {
         alert("Operation failed!\nCannot delete user due to foreign key constrain!");
       }
+      dialogFormVisible = false;
     },
   },
   computed: {

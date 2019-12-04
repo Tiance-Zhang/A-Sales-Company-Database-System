@@ -115,7 +115,6 @@ export default {
           if (this.getCurUser.userId === "" || this.getCurUser.type === 0) {
             this.info.id = this.info.userId;
             const r = await this.$api.post("/api/user", { data: this.info });
-            console.log(r.data)
             if (r.data.status === true) {
               alert("Operation Succeed!");
             } else {

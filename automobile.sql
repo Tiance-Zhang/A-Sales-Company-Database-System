@@ -98,6 +98,7 @@ CREATE TABLE `homeCustomer` (
   `id` INT NOT NULL,
   `marriage` VARCHAR(31) DEFAULT NULL,
   `gender` INT DEFAULT NULL,
+  `age` INT DEFAULT NULL,
   `income` INT DEFAULT NULL,
   FOREIGN KEY(`id`)
     REFERENCES user(`id`) ON UPDATE CASCADE ON DELETE CASCADE
@@ -107,8 +108,8 @@ CREATE TABLE `homeCustomer` (
 -- Records of homeCustomer
 -- ----------------------------
 BEGIN;
-INSERT INTO `homeCustomer` VALUES (3, 'marriaged', 0, 9999);
-INSERT INTO `homeCustomer` VALUES (6, 'single', 1, 9998);
+INSERT INTO `homeCustomer` VALUES (3, 'marriaged', 0, 21, 9999);
+INSERT INTO `homeCustomer` VALUES (6, 'single', 1, 58, 9998);
 COMMIT;
 
 -- ----------------------------

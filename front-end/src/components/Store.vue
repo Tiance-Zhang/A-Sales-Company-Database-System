@@ -2,7 +2,7 @@
   <el-card class="store-card">
     <div class="first_line">
       <div>No. {{s.id}}</div>
-      <div v-if="getCurUser.type === 0 || getCurUser.type === 1">
+      <div v-if="getCurUser.type === 0">
         <el-button @click="dialogFormVisible = true">Update</el-button>
         <el-button @click="deleteS">Delete</el-button>
       </div>

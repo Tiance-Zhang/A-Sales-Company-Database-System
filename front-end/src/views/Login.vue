@@ -28,7 +28,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("updateCurrentTabIndex", "6");
-    console.log(this.getCurUser)
   },
   computed: {
     ...mapGetters(["getCurUser"])

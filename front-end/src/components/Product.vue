@@ -2,7 +2,7 @@
   <el-card class="product-card">
     <div class="first_line">
       <div>Product ID: {{p['productId']}}</div>
-      <div v-if="getCurUser.type === 0 || getCurUser.type === 1">
+      <div v-if="getCurUser.type === 0">
         <el-button @click="dialogFormVisible = true">Update</el-button>
         <el-button @click="deleteP">Delete</el-button>
       </div>
