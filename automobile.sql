@@ -143,12 +143,12 @@ CREATE TABLE `store` (
   `address` VARCHAR(255) NOT NULL,
   `regionId` INT NOT NULL,
   `managerId` INT NOT NULL,
-  `numberOfSalespersons` INT NOT NULL,
+  `numberOfSalesperson` INT NOT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`managerId`)
     REFERENCES user(`Id`) ON UPDATE CASCADE ON DELETE NO ACTION,
   FOREIGN KEY (`regionId`)
-    REFERENCES region(`Id`) ON UPDATE CASCADE ON DELETE CASCADE
+    REFERENCES region(`Id`) ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 -- ----------------------------

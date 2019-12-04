@@ -35,7 +35,7 @@
         <el-input v-model="info.gross"></el-input>
       </el-form-item>
       <el-form-item label="Marriage" v-if="info.type===3" :label-width="formLabelWidth">
-        <el-input v-model="info.Marriage"></el-input>
+        <el-input v-model="info.marriage"></el-input>
       </el-form-item>
       <el-form-item label="Gender" v-if="info.type===3" :label-width="formLabelWidth">
         <el-select v-model="info.gender" placeholder="Select">
@@ -98,8 +98,7 @@ export default {
         name: [{ required: true, message: "Required", trigger: "blur" }],
         address: [{ required: true, message: "Required", trigger: "blur" }],
         zip: [{ required: true, message: "Required", trigger: "blur" }]
-      },
-      postdata: this.info
+      }
     };
   },
   mounted() {
@@ -114,15 +113,21 @@ export default {
       this.$refs["infoForm"].validate(async valid => {
         if (valid) {
           if (this.getCurUser.userId === "" || this.getCurUser.type === 0) {
-            this.info.id = this.info.userId
-            const r = await this.$api.post("/api/user", this.postdata);
+            this.info.id = this.info.userId;
+            const r = await this.$api.post("/api/user", { data: this.info });
+            console.log(r.data)
+            if (r.data.status === true) {
+              alert("Operation Succeed!");
+            } else {
+              alert("Operation Failed!");
+            }
           } else {
             const r = await this.$api.put("/api/user", this.info);
-          }
-          if (this.info.status == true) {
-            alert("Operation Succeed!");
-          } else {
-            alert("Operation Failed!");
+            if (r.data.status === true) {
+              alert("Operation Succeed!");
+            } else {
+              alert("Operation Failed!");
+            }
           }
         } else {
           console.log("error submit!!");
@@ -138,12 +143,12 @@ export default {
 .el-select {
   width: 100%;
 }
-.el-radio{
+.el-radio {
   width: 50%;
   margin: 0px;
 }
 
-.el-radio.is-bordered+.el-radio.is-bordered {
+.el-radio.is-bordered + .el-radio.is-bordered {
   margin-left: 0px;
 }
 </style>

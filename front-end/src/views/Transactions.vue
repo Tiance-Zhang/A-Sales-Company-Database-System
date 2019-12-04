@@ -1,14 +1,23 @@
 <template>
   <div>
-    <div v-if="getCurUser.typeype === 0 || getCurUser.typeype === 1" class="newTransaction">
+    <div v-if="getCurUser.type === 0 || getCurUser.type === 1" class="newTransaction">
       <el-button type="text" @click="dialogFormVisible = true">Create a new transaction</el-button>
-      <el-dialog title="New transaction" :visible.sync="dialogFormVisible">
+      <el-dialog title="New Tansaction" :visible.sync="dialogFormVisible">
         <el-form :model="form">
-          <el-form-item label="Customer Id" :label-width="formLabelWidth">
-            <el-input v-model="form.customerId" autocomplete="off"></el-input>
+          <el-form-item label="Tansaction Id" :label-width="formLabelWidth">
+            <el-input v-model="form.id" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="Date" :label-width="formLabelWidth">
             <el-input v-model="form.date" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Salesperson Id" :label-width="formLabelWidth">
+            <el-input v-model="form.salespersonId" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Customer Id" :label-width="formLabelWidth">
+            <el-input v-model="form.customerId" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="Store Id" :label-width="formLabelWidth">
+            <el-input v-model="form.storeId" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="Product Name" :label-width="formLabelWidth">
             <el-input v-model="form.productName" autocomplete="off"></el-input>
@@ -22,11 +31,15 @@
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="submitTransaction">Confirm</el-button>
+          <el-button type="primary" @click="submitTansaction">Confirm</el-button>
         </span>
       </el-dialog>
     </div>
-    <div v-for="t in transactions" v-bind:key="t.orderNumber">
+    <el-card
+      v-if="typeof getCurUser.id === 'undefined'"
+      style="text-align: center; margin: 20px auto; width: 400px;"
+    >Please login first</el-card>
+    <div v-else v-for="t in transactions" v-bind:key="t.orderNumber">
       <Transaction :t="t"></Transaction>
     </div>
   </div>
@@ -36,36 +49,19 @@
 import Transaction from "@/components/Transaction";
 import { mapGetters } from "vuex";
 
-var data = [
-  {
-    orderNumber: 1,
-    date: "11-25-2019",
-    salespersonName: "Jack",
-    productName:
-      "2 of Move Free Joint Health Supplement Tablets, (120 count in a bottle), Supports Mobility, Flexibility, Strength, Lubrication and Comfort",
-    price: 50000,
-    quantity: 1
-  },
-  {
-    orderNumber: 2,
-    date: "11-23-2019",
-    salespersonName: "Ben",
-    productName: "Benz",
-    price: 100000,
-    quantity: 2
-  }
-];
-
 export default {
   name: "Transactions",
   components: { Transaction },
   data() {
     return {
-      transactions: data,
+      transactions: {},
       dialogFormVisible: false,
       form: {
-        customerId: "",
+        id: "",
         date: "",
+        salespersonId: "",
+        storeId: "",
+        customerId: "",
         productName: "",
         price: "",
         quantity: ""
@@ -73,19 +69,37 @@ export default {
       formLabelWidth: "120px"
     };
   },
-  mounted() {
-    console.log("mounted");
+  async mounted() {
     this.$store.dispatch("updateCurrentTabIndex", "3");
+    if (this.getCurUser.type === 1) {
+      const r = await this.$api.get(
+        "/api/transactionsSalesperson?salespersonId=" + this.getCurUser.id
+      );
+      this.transactions = r.data.data;
+    } else if (this.getCurUser.type === 2 || this.getCurUser.type === 3) {
+      const r = await this.$api.get(
+        "/api/transactionsCustomer?customerId=" + this.getCurUser.id
+      );
+      this.transactions = r.data.data;
+    } else if (this.getCurUser.type === 0) {
+      const r = await this.$api.get("/api/transaction");
+      this.transactions = r.data.data;
+    }
   },
   methods: {
-    submitTransaction() {
-      console.log(this.form);
+    async submitTansaction() {
+      const r = await this.$api.post("/api/transaction", { data: this.form });
+      if (r.data.status === true) {
+        alert("Update Success!");
+      } else {
+        alert("Operation failed!");
+      }
       this.dialogFormVisible = false;
     }
   },
   computed: {
     ...mapGetters(["getCurUser"])
-  },
+  }
 };
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <el-radio-group v-model="pageType" class="pageType">
+    <el-radio-group v-model="pageType">
       <el-radio :label="false" border>Search existing user</el-radio>
       <el-radio :label="true" border>Create a new user</el-radio>
     </el-radio-group>

@@ -2,16 +2,24 @@
 <div class="container">
     <el-card>
         <div class="infoBody">
-            <div>mostPopularProduct</div>
+            <div>Most Popular Product</div>
             <div>{{data.mostPopularProduct}}</div>
         </div>
         <div class="infoBody">
-            <div>mostBuyer</div>
-            <div>{{data.mostBuyer}}</div>
+            <div>Business Customer Buys Most</div>
+            <div>Mia</div>
+        </div>
+        <div class="infoBody">
+            <div>Home Customer Buys Most</div>
+            <div>Ivan</div>
+        </div>
+        <div class="infoBody">
+            <div>Total Sales</div>
+            <div>33,331</div>
         </div>
         <div v-for="(value, key) in data.regions" v-bind:key="key">
             <div class="infoBody">
-                <div>{{key}}</div>
+                <div>Store {{key}}</div>
                 <div>{{value}}</div>
             </div>
         </div>
@@ -21,11 +29,11 @@
 
 <script>
 var data = {
-    mostPopularProduct: "Chicken",
+    mostPopularProduct: "458 spider",
     mostBuyer: "KFC",
     regions: {
-        "CA": 123,
-        "US": 13
+        "1": 1,
+        "2": 3
     }
 }
 

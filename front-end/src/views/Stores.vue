@@ -4,23 +4,20 @@
       <el-button type="text" @click="dialogFormVisible = true">Create a new store</el-button>
       <el-dialog title="New Store" :visible.sync="dialogFormVisible">
         <el-form :model="form">
-          <el-form-item label="Street" :label-width="formLabelWidth" prop="street">
-            <el-input v-model="form.street"></el-input>
+          <el-form-item label="Store Id" :label-width="formLabelWidth">
+            <el-input v-model="form.id" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="City" :label-width="formLabelWidth" prop="city">
-            <el-input v-model="form.city"></el-input>
+          <el-form-item label="Address" :label-width="formLabelWidth">
+            <el-input v-model="form.address" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="State" :label-width="formLabelWidth" prop="state">
-            <el-input v-model="form.state"></el-input>
+          <el-form-item label="Region Id" :label-width="formLabelWidth">
+            <el-input v-model="form.regionId" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="Zip" :label-width="formLabelWidth" prop="zipcode">
-            <el-input v-model="form.zip"></el-input>
+          <el-form-item label="Manager Id" :label-width="formLabelWidth">
+            <el-input v-model="form.managerId" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="Manager" :label-width="formLabelWidth" prop="manager">
-            <el-input v-model="form.manager"></el-input>
-          </el-form-item>
-          <el-form-item label="Zip" :label-width="formLabelWidth" prop="zipcode">
-            <el-input v-model="form.zipcode"></el-input>
+          <el-form-item label="Number of Salesperson" :label-width="formLabelWidth">
+            <el-input v-model="form.numberOfSalesperson" autocomplete="off"></el-input>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
@@ -39,46 +36,39 @@
 import Store from "@/components/Store";
 import { mapGetters } from "vuex";
 
-var data = [
-  {
-    storeId: 123,
-    address: "test street P.A.",
-    manager: "Dam",
-    numOfSalesperson: 256,
-    region: "US"
-  },
-  {
-    storeId: 12,
-    address: "222test street P.A.",
-    manager: "Dam111",
-    numOfSalesperson: 16,
-    region: "CA"
-  }
-];
-
 export default {
   name: "Stores",
   components: { Store },
   data() {
     return {
-      stores: data,
+      stores: {},
       dialogFormVisible: false,
       form: {
-        storeId: "",
+        id: "",
         address: "",
-        manager: "",
-        numOfSalesperson: "",
-        region: ""
+        managerId: "",
+        numberOfSalesperson: "",
+        regionId: ""
       },
       formLabelWidth: "120px"
     };
   },
-  mounted() {
+  async mounted() {
     this.$store.dispatch("updateCurrentTabIndex", "2");
+    const r = await this.$api.get("/api/stores");
+    this.stores = r.data.data;
   },
   methods: {
-    submitStore() {
-      console.log(this.form);
+    async submitStore() {
+      const r = await this.$api.post("/api/store", { data: this.form });
+      if (r.data.status === true) {
+        const r2 = await this.$api.get("/api/stores");
+        this.stores = r2.data.data;
+        this.dialogFormVisible = false;
+        alert("Update Success!");
+      } else {
+        alert("Operation failed!");
+      }
       this.dialogFormVisible = false;
     }
   },
